@@ -54,6 +54,32 @@ public class DataManager {
  
 	   }
 	   
+	   // set new database update string
+	   public void setUpdate( String query ) 
+	      throws SQLException, IllegalStateException 
+	   {
+	      // ensure database connection is available
+	      if ( !connectedToDatabase ) 
+	         throw new IllegalStateException( "Not Connected to Database" );
+
+	      // specify query and execute it
+	      statement.executeUpdate( query );
+ 
+	   }
+	   
+	   // set new database update string
+	   public void setExec( String query ) 
+	      throws SQLException, IllegalStateException 
+	   {
+	      // ensure database connection is available
+	      if ( !connectedToDatabase ) 
+	         throw new IllegalStateException( "Not Connected to Database" );
+
+	      // specify query and execute it
+	      statement.execute( query );
+ 
+	   }
+	   
 	   public void disconnectFromDatabase()
 	   {
 	      // close Statement and Connection

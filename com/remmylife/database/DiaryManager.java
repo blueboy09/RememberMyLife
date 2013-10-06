@@ -12,7 +12,7 @@ import com.remmylife.head.*;
 public class DiaryManager extends Diary {
 	
 	private String driver = "com.mysql.jdbc.Driver"; 
-	private String url = "jdbc:mysql://localhost:3306/remembermylife";
+	private String url = "jdbc:mysql://localhost:3306/";
 	private String user = "yfjin";
 	private String password = "1234";
 	
@@ -22,17 +22,18 @@ public class DiaryManager extends Diary {
 		
 	}
 	
-	public ArrayList<Diary> getInitialDiaryList() throws IllegalStateException, SQLException, IOException, ClassNotFoundException {
+	
+	public void getInitialDiaryList() throws IllegalStateException, SQLException, IOException, ClassNotFoundException {
 		DataManager dataManager = new DataManager(driver,url,user,password);
 		String initial=readSQL("initial.sql");
+		String[] init =initial.split(";");
 		dataManager.setQuery(initial);
-		ArrayList<Diary> DiaryList = constructDiaryList(dataManager);
+		for(String s:init){
+			dataManager.setExec(s);
+		}
 		dataManager.disconnectFromDatabase();
-		return DiaryList;
-		
-		
-		
 	}
+	
 	public ArrayList<Diary> getDiaryList() throws IllegalStateException, SQLException, ClassNotFoundException{
 		DataManager dataManager = new DataManager(driver,url,user,password);
 		String getlist="SELECT * FROM DiaryList " ;
@@ -123,20 +124,20 @@ public class DiaryManager extends Diary {
 		switch (diary.getType()){
 			case TEXT_DIARY : 
 				String stext="delete from textlist where id ="+id;
-				dataManager.setQuery(stext);
+				dataManager.setUpdate(stext);
 			case IMAGE_DIARY :
 				String simage="delete from imagelist where id ="+id;
-				dataManager.setQuery(simage);
+				dataManager.setUpdate(simage);
 			case VOICE_DIARY :
 				String svoice="delete from voicelist where id ="+id;
-				dataManager.setQuery(svoice);
+				dataManager.setUpdate(svoice);
 			case VIDEO_DIARY :
 				String svideo="delete from videolist where id ="+id;
-				dataManager.setQuery(svideo);		
+				dataManager.setUpdate(svideo);		
 		}
 		
 		String del ="delete from diarylist where id ="+id;
-		dataManager.setQuery(del);
+		dataManager.setUpdate(del);
 		dataManager.disconnectFromDatabase();
 	}
 	
@@ -154,13 +155,13 @@ public class DiaryManager extends Diary {
 
 		String savediary = "insert into `diarylist`(id,type,title,date,weather) values ('"
 				+id+"', '"+ type+"', '" + title +"', '"+date+"', '"+weather+"');" ;
-		dataManager.setQuery(savediary);
+		dataManager.setUpdate(savediary);
 		switch(diary.getType()){
 			case TEXT_DIARY : 
 					String text=((TextDiary)diary).getText();
 					String stext = "insert into `textlist`(id,text) values ('"
 					+ id +"', '"+ text+"');";
-					dataManager.setQuery(stext);
+					dataManager.setUpdate(stext);
 			case IMAGE_DIARY :
 					String note1 =((ImageDiary)diary).getNote();
 					String[] imagename= ((ImageDiary)diary).getImageList();
@@ -170,7 +171,7 @@ public class DiaryManager extends Diary {
 					}
 					String simage = "insert into `iamgelist`(id,note,imagename) values ('"
 							+ id +"', '"+ note1+"', '"+ imageList +"');";
-					dataManager.setQuery(simage);
+					dataManager.setUpdate(simage);
 					
 					
 			case VOICE_DIARY :
@@ -178,14 +179,14 @@ public class DiaryManager extends Diary {
 					String voicename=((VoiceDiary)diary).getVoiceName();
 					String svoice = "insert into `voicelist`(id,note,voicename) values ('"
 							+ id +"', '"+ note2+"', '"+ voicename +"');";
-					dataManager.setQuery(svoice);
+					dataManager.setUpdate(svoice);
 					
 			case VIDEO_DIARY :
 					String note3 = ((VideoDiary)diary).getNote();
 					String videoname =((VideoDiary)diary).getVideoName();
 					String svideo = "insert into `videolist`(id,note,videoname) values ('"
 							+ id +"', '"+ note3+"', '"+ videoname +"');";
-					dataManager.setQuery(svideo);
+					dataManager.setUpdate(svideo);
 		}
 		
 		dataManager.disconnectFromDatabase();
@@ -281,6 +282,31 @@ public class DiaryManager extends Diary {
 		  return sb.toString();
 		
 	}
+	public void setDriver(String driver)
+	{
+		this.driver=driver;
+	}
 	
+	public String getDirver()
+	{
+		return this.driver;
+	}
+	
+	public void setURL(String url){
+		this.url = url;
+	}
+	public String getURL(){
+		return url;
+	}
+	public void setUSER(String user){
+		this.user=user;
+	}
+	public String getUSER(){
+		return this.user;
+	}
+	public void setPassword(String password){
+		this.password=password;
+	}
 
+	
 }
