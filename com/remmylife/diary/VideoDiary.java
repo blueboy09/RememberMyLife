@@ -26,6 +26,14 @@ public class VideoDiary extends Diary
 		super(id, DiaryType.VIDEO_DIARY, title, date, weather);
 	}
 	
+	public VideoDiary(int id, String title, Date date, Weather weather,String note,String videoname)
+	{
+		super(id, DiaryType.VIDEO_DIARY, title, date, weather);
+		this.setNote(note);
+		this.setVideoName(videoname);
+	}
+	
+	
 	public void setVideoName(String videoName)
 	{
 		this.videoName = videoName;

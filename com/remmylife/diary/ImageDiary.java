@@ -27,6 +27,13 @@ public class ImageDiary extends Diary
 		super(id, DiaryType.IMAGE_DIARY, title, date, weather);
 	}
 	
+	public ImageDiary(int id, String title, Date date, Weather weather,String note, String[] imageList)
+	{
+		super(id, DiaryType.IMAGE_DIARY, title, date, weather);
+		this.setNote(note);
+		this.setImageList(imageList);
+	}
+	
 	public void setImageList(String[] imageList)
 	{
 		if(imageList.length != 0)

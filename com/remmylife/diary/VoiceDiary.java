@@ -26,6 +26,14 @@ public class VoiceDiary extends Diary
 		super(id, DiaryType.VOICE_DIARY, title, date, weather);
 	}
 	
+	
+	public VoiceDiary(int id, String title, Date date, Weather weather,String note,String voiceName)
+	{
+		super(id, DiaryType.VOICE_DIARY, title, date, weather);
+		this.setNote(note);
+		this.setVoiceName(voiceName);
+	}
+	
 	public void setVoiceName(String voiceName)
 	{
 		this.voiceName = voiceName;

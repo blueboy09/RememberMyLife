@@ -25,6 +25,12 @@ public class TextDiary extends Diary
 		super(id, DiaryType.TEXT_DIARY, title, date, weather);
 	}
 	
+	public TextDiary(int id, String title, Date date, Weather weather, String text)
+	{
+		super(id, DiaryType.TEXT_DIARY, title, date, weather);
+		this.text = text;
+	}
+	
 	public void setText(String text)
 	{
 		this.text = text;
