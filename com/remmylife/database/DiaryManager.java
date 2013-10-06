@@ -16,12 +16,19 @@ public class DiaryManager extends Diary {
 	private String user = "yfjin";
 	private String password = "1234";
 	
-	public DiaryManager() throws ClassNotFoundException, SQLException {
-		
-		
-		
+	public DiaryManager() {
+				
 	}
-	
+	public DiaryManager(String user, String password) {
+		this.setUSER(user);
+		this.setPassword(password);
+	}	
+	public DiaryManager(String driver, String url,String user, String password) {
+		this.setDriver(driver);
+		this.setURL(url);
+		this.setUSER(user);
+		this.setPassword(password);
+	}		
 	
 	public void getInitialDiaryList() throws IllegalStateException, SQLException, IOException, ClassNotFoundException {
 		DataManager dataManager = new DataManager(driver,url,user,password);
