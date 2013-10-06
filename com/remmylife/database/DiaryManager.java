@@ -42,11 +42,8 @@ public class DiaryManager extends Diary {
 	}
 	
 	public ArrayList<Diary> getDiaryList() throws IllegalStateException, SQLException, ClassNotFoundException{
-		DataManager dataManager = new DataManager(driver,url,user,password);
 		String getlist="SELECT * FROM DiaryList " ;
-		dataManager.setQuery(getlist);
-		ArrayList<Diary> DiaryList = constructDiaryList(dataManager);
-		dataManager.disconnectFromDatabase();
+		ArrayList<Diary> DiaryList = execSqlQuery(getlist);
 		return DiaryList;
 	}
 	
@@ -67,61 +64,43 @@ public class DiaryManager extends Diary {
 	
 
 	public ArrayList<Diary> getDiaryListByYear(String year) throws IllegalStateException,ClassNotFoundException, SQLException{
-		DataManager dataManager = new DataManager(driver,url,user,password);
 		String listByTime= "Select * from diarylist where date like \""+year +"-%\"";
-		dataManager.setQuery(listByTime);
-		ArrayList<Diary> DiaryList = constructDiaryList(dataManager);
-		dataManager.disconnectFromDatabase();
+		ArrayList<Diary> DiaryList = execSqlQuery(listByTime);
 		return DiaryList;
 	}	
 
 	
 	public ArrayList<Diary> getDiaryById(int id) throws ClassNotFoundException, SQLException {
-		DataManager dataManager = new DataManager(driver,url,user,password);
 		String getlist="SELECT * FROM DiaryList where id = " +id ;
-		dataManager.setQuery(getlist);
-		ArrayList<Diary> DiaryList = constructDiaryList(dataManager);
-		dataManager.disconnectFromDatabase();		
+		ArrayList<Diary> DiaryList = execSqlQuery(getlist);
 		return DiaryList;
 	}
 
 	
 	public ArrayList<Diary> sortByTime() throws ClassNotFoundException, SQLException{
-		DataManager dataManager = new DataManager(driver,url,user,password);
 		String listByTime= "SELECT * FROM diarylist ORDER BY date DESC";
-		dataManager.setQuery(listByTime);
-		ArrayList<Diary> DiaryList = constructDiaryList(dataManager);
-		dataManager.disconnectFromDatabase();
+		ArrayList<Diary> DiaryList = execSqlQuery(listByTime);
 		return DiaryList;
 	}
 
 	
 	public ArrayList<Diary> sortByType() throws ClassNotFoundException, SQLException{
-		DataManager dataManager = new DataManager(driver,url,user,password);
 		String listByType= "SELECT * from diarylist ORDER BY type ASC;";
-		dataManager.setQuery(listByType);
-		ArrayList<Diary> DiaryList = constructDiaryList(dataManager);
-		dataManager.disconnectFromDatabase();
+		ArrayList<Diary> DiaryList = execSqlQuery(listByType);
 		return DiaryList;
 	}
 	
 	
 	public ArrayList<Diary> searchByTitle(String title) throws ClassNotFoundException, SQLException{
-		DataManager dataManager = new DataManager(driver,url,user,password);
 		String listByTitle= "Select * from diarylist where title like \"%"+title +"%\"";
-		dataManager.setQuery(listByTitle);
-		ArrayList<Diary> DiaryList = constructDiaryList(dataManager);
-		dataManager.disconnectFromDatabase();
+		ArrayList<Diary> DiaryList = execSqlQuery(listByTitle);
 		return DiaryList;
 	}
 	
 	public ArrayList<Diary> searchByDay(String year, String month, String day) throws ClassNotFoundException, SQLException{
-		DataManager dataManager = new DataManager(driver,url,user,password);
 		String date= year+"-"+month+"-"+day;
 		String listByTime= "Select * from diarylist where date like \""+ date +"%\"";
-		dataManager.setQuery(listByTime);
-		ArrayList<Diary> DiaryList = constructDiaryList(dataManager);
-		dataManager.disconnectFromDatabase();
+		ArrayList<Diary> DiaryList = execSqlQuery(listByTime);
 		return DiaryList;
 	}	
 	
@@ -201,6 +180,13 @@ public class DiaryManager extends Diary {
 							
 	}
 	
+	public ArrayList<Diary> execSqlQuery(String query) throws ClassNotFoundException, SQLException{
+		DataManager dataManager = new DataManager(driver,url,user,password);
+		dataManager.setQuery(query);
+		ArrayList<Diary> DiaryList = constructDiaryList(dataManager);
+		dataManager.disconnectFromDatabase();
+		return DiaryList;
+	}
 	
 	public ArrayList<Diary> constructDiaryList(DataManager dataManager) throws ClassNotFoundException, SQLException{
 		ArrayList<Diary> DiaryList= new ArrayList<Diary>();
