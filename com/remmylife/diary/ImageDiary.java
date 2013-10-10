@@ -1,14 +1,16 @@
 package com.remmylife.diary;
 
 import java.util.Date;
+import java.util.ArrayList;
 import java.awt.Image;
 
 import com.remmylife.head.*;
 
 public class ImageDiary extends Diary
 {
-	private String[] imageList = null;//Í¼Æ¬Ãû
-	private String note = null;//ÕÕÆ¬µÄ×¢ÊÍ
+	String[] imageList = null;//Í¼Æ¬Ãû
+	Byte[][] images = null;//Í¼Æ¬µÄ×Ö½ÚÁ÷
+	String note = null;//ÕÕÆ¬µÄ×¢ÊÍ
 	
 	public ImageDiary()
 	{
@@ -42,6 +44,27 @@ public class ImageDiary extends Diary
 	public String[] getImageList()
 	{
 		return this.imageList;
+	}
+	
+	public void setImages(Byte[][] images)
+	{
+		if(images.length != 0)
+		{
+			this.images = new Byte[images.length][];
+			for(int i = 0; i < images.length; ++ i)
+			{
+				this.images[i] = new Byte[images[i].length];
+				for(int j = 0; j < images[i].length; ++ j)
+				{
+					this.images[i][j] = images[i][j];
+				}
+			}
+		}
+	}
+	
+	public Byte[][] getImages()
+	{
+		return images;
 	}
 	
 	public void setNote(String note)
