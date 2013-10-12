@@ -1,11 +1,13 @@
 package com.remmylife.database;
 
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.Date;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.io.*;
 
+import com.mysql.jdbc.Connection;
 import com.remmylife.diary.*;
 import com.remmylife.head.*;
 
@@ -25,11 +27,12 @@ public class DiaryManager extends Diary {
 	}
 	
 	public Diary getDiary(int id) throws ClassNotFoundException, SQLException{
+		System.out.println("aaaa"+id);
 		return getDiaryById(id).get(0);
 	}
 	
-	public void addDiary(Diary diary) throws IllegalStateException, ClassNotFoundException, SQLException{
-		saveDiary(diary);
+	public int addDiary(Diary diary) throws IllegalStateException, ClassNotFoundException, SQLException{
+		return saveDiary(diary);
 	}
 	
 	public void updateDiary(Diary diary) throws IllegalStateException, ClassNotFoundException, SQLException{
@@ -211,7 +214,7 @@ public class DiaryManager extends Diary {
 		}
 	}
 	
-	public void saveDiary(Diary diary) throws IllegalStateException, SQLException, ClassNotFoundException{
+	public int saveDiary(Diary diary) throws IllegalStateException, SQLException, ClassNotFoundException{
 		DataManager dataManager = new DataManager(driver,url,user,password);
 		int id = diary.getId();
 		System.out.println(count);
@@ -236,34 +239,68 @@ public class DiaryManager extends Diary {
 					dataManager.setUpdate(stext);
 					break;
 			case IMAGE_DIARY :
-					String note1 =((ImageDiary)diary).getNote();
-					String[] imagename= ((ImageDiary)diary).getImageList();
-					String imageList=null;
-					for(String c:imagename){
-						imageList = imageList+";"+c;
+				String note1 =((ImageDiary)diary).getNote();
+				String[] imagename= ((ImageDiary)diary).getImageList();
+				byte[][] image=((ImageDiary)diary).getImages();
+				String imageList=null;
+				for(String c:imagename){
+					if(c==null)break;
+					if(imageList==null){
+						imageList = c;
+					}else{
+					imageList = imageList+";"+c;
 					}
-					String simage = "insert into `iamgelist`(id,note,imagename) values ('"
-							+ id +"', '"+ note1+"', '"+ imageList +"');";
-					dataManager.setUpdate(simage);
-					break;
+				}					
+				java.sql.Connection con = DriverManager.getConnection(this.url,this.user,this.password);
+				java.sql.PreparedStatement pS = con.prepareStatement("insert into `imagelist`(id,note,imagename,imagedata) values ('"
+						+ id +"', '"+ note1+"', '"+ imageList +"', ?);");
+									
+				//File imgFile = new File("d:\\d.jpg");
+				//InputStream iS = new FileInputStream(imgFile);
+				
+				InputStream iS= new ByteArrayInputStream(image[0]);
+				pS.setBinaryStream(1, iS,(int)(image[0].length));
+				pS.executeUpdate();
+				
+
+				
+				break;
 			case VOICE_DIARY :
-					String note2 =((VoiceDiary)diary).getNote();
-					String voicename=((VoiceDiary)diary).getVoiceName();
-					String svoice = "insert into `voicelist`(id,note,voicename) values ('"
-							+ id +"', '"+ note2+"', '"+ voicename +"');";
-					dataManager.setUpdate(svoice);
-					break;
+				String note2 =((VoiceDiary)diary).getNote();
+				String voicename= ((VoiceDiary)diary).getVoiceName();
+				byte[] voice=((VoiceDiary)diary).getVoice();
+				java.sql.Connection con2 = DriverManager.getConnection(this.url,this.user,this.password);
+				java.sql.PreparedStatement pS2 = con2.prepareStatement("insert into `voicelist`(id,note,voicename,voicedata) values ('"
+						+ id +"', '"+ note2+"', '"+ voicename +"', ?);");
+									
+				//File imgFile = new File("d:\\d.jpg");
+				//InputStream iS = new FileInputStream(imgFile);
+				
+				InputStream iS2= new ByteArrayInputStream(voice);
+				pS2.setBinaryStream(1, iS2,(int)(voice.length));
+				pS2.executeUpdate();
+				
+
+				break;
 			case VIDEO_DIARY :
-					String note3 = ((VideoDiary)diary).getNote();
-					String videoname =((VideoDiary)diary).getVideoName();
-					String svideo = "insert into `videolist`(id,note,videoname) values ('"
-							+ id +"', '"+ note3+"', '"+ videoname +"');";
-					dataManager.setUpdate(svideo);
-					break;
+				String note3 =((VideoDiary)diary).getNote();
+				String videoname= ((VideoDiary)diary).getVideoName();
+				byte[] video=((VideoDiary)diary).getVideo();
+				java.sql.Connection con3 = DriverManager.getConnection(this.url,this.user,this.password);
+				java.sql.PreparedStatement pS3 = con3.prepareStatement("insert into `voicelist`(id,note,videoname,videodata) values ('"
+						+ id +"', '"+ note3+"', '"+ videoname +"', ?);");
+									
+				//File imgFile = new File("d:\\d.jpg");
+				//InputStream iS = new FileInputStream(imgFile);
+				
+				InputStream iS3= new ByteArrayInputStream(video);
+				pS3.setBinaryStream(1, iS3,(int)(video.length));
+				pS3.executeUpdate();
 		}
 		
 		dataManager.disconnectFromDatabase();
-		
+		System.out.println("disdisdis");
+		return id;
 							
 	}
 	
@@ -322,7 +359,15 @@ public class DiaryManager extends Diary {
 					String note1 = (String)DMimage.getValueAt(1, 2);
 					String imagename = (String)DMimage.getValueAt(1, 3);
 					String[] imageList = imagename.split(";"); 
-					DiaryList.add(new ImageDiary(id,title,date,weather,note1,imageList));
+					
+					
+					java.sql.Connection con = DriverManager.getConnection(this.url,this.user,this.password);
+					java.sql.PreparedStatement pS = con.prepareStatement("SELECT * FROM imagelist where id = 4");
+					ResultSet rS = pS.executeQuery();
+					java.sql.Blob blob = rS.getBlob("imagedata");
+					byte[]image= blob.getBytes(0, (int) blob.length());
+					DiaryList.add(new ImageDiary(id,title,date,weather,note1,imageList,image));
+					
 					DMimage.disconnectFromDatabase();
 					break;
 				case VOICE_DIARY:
@@ -330,7 +375,15 @@ public class DiaryManager extends Diary {
 					DMvoice.setQuery("SELECT * FROM voicelist where id="+id);
 					String note2 = (String)DMvoice.getValueAt(1, 2);
 					String  voicename= (String)DMvoice.getValueAt(1, 3); 
-					DiaryList.add(new VoiceDiary(id,title,date,weather,note2,voicename));
+					
+					java.sql.Connection con2 = DriverManager.getConnection(this.url,this.user,this.password);
+					java.sql.PreparedStatement pS2 = con2.prepareStatement("SELECT * FROM imagelist where id = 4");
+					ResultSet rS2 = pS2.executeQuery();
+					java.sql.Blob blob2 = rS2.getBlob("voicedata");
+					byte[]voice= blob2.getBytes(0, (int) blob2.length());
+					DiaryList.add(new VoiceDiary(id,title,date,weather,note2,voicename,voice));
+					
+					
 					DMvoice.disconnectFromDatabase();
 					break;
 				case VIDEO_DIARY:
@@ -338,7 +391,14 @@ public class DiaryManager extends Diary {
 					DMvideo.setQuery("SELECT * FROM videolist where id="+id);
 					String note3 = (String)DMvideo.getValueAt(1, 2);
 					String  videoname= (String)DMvideo.getValueAt(1, 3); 
-					DiaryList.add(new VideoDiary(id,title,date,weather,note3,videoname));
+					
+					java.sql.Connection con3 = DriverManager.getConnection(this.url,this.user,this.password);
+					java.sql.PreparedStatement pS3 = con3.prepareStatement("SELECT * FROM imagelist where id = 4");
+					ResultSet rS3 = pS3.executeQuery();
+					java.sql.Blob blob3 = rS3.getBlob("videodata");
+					byte[]video = blob3.getBytes(0, (int) blob3.length());
+					DiaryList.add(new VideoDiary(id,title,date,weather,note3,videoname,video));
+					
 					DMvideo.disconnectFromDatabase();
 					break;
 				}

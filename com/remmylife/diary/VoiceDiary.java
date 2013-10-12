@@ -35,6 +35,14 @@ public class VoiceDiary extends Diary
 		this.setVoiceName(voiceName);
 	}
 	
+	public VoiceDiary(int id, String title, Date date, Weather weather,
+			String note2, String voicename, byte[] voice) {
+		super(id, DiaryType.VOICE_DIARY, title, date, weather);
+		this.setNote(note);
+		this.setVoiceName(voiceName);
+		this.setVoice(voice);
+	}
+
 	public void setVoiceName(String voiceName)
 	{
 		this.voiceName = voiceName;
@@ -45,7 +53,7 @@ public class VoiceDiary extends Diary
 		return this.voiceName;
 	}
 	
-	public void setVoice(Byte[] voice)
+	public void setVoice(byte[] voice)
 	{
 		if(voice.length != 0)
 		{

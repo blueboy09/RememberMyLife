@@ -34,8 +34,17 @@ public class ImageDiary extends Diary
 		super(id, DiaryType.IMAGE_DIARY, title, date, weather);
 		this.setNote(note);
 		this.setImageList(imageList);
+	
 	}
 	
+	public ImageDiary(int id, String title, Date date, Weather weather,
+			String note1, String[] imageList2, byte[] image) {
+		super(id, DiaryType.IMAGE_DIARY, title, date, weather);
+		this.setNote(note);
+		this.setImageList(imageList);
+		this.setImages(images);	
+	}
+
 	public void setImageList(String[] imageList)
 	{
 		if(imageList.length != 0)
@@ -73,6 +82,8 @@ public class ImageDiary extends Diary
 	{
 		return images;
 	}
+	
+
 	
 	public void setNote(String note)
 	{

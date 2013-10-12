@@ -153,7 +153,7 @@ public class TextDiaryDialog extends javax.swing.JDialog {
             textDiary = generateDiary();
             UICommonData.Instance().newAddedDiary = textDiary;
             try {
-				UICommonData.Instance().diaryManager.addDiary(textDiary);
+				textDiary.setId(UICommonData.Instance().diaryManager.addDiary(textDiary));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

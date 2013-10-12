@@ -100,7 +100,7 @@ public class DiaryListItem extends javax.swing.JPanel {
         });
     }
     
-    private Diary getDiary(int id) { // For Test
+    private Diary getDiary(int id) { 
         Diary diary = null;
 		try {
 			diary = UICommonData.Instance().diaryManager.getDiary(id);
