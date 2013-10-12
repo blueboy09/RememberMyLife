@@ -6,7 +6,8 @@ import com.remmylife.head.*;
 
 public class VoiceDiary extends Diary
 {
-	private String voiceName = null;
+	private String voiceName = null;//音频名
+	private Byte[] voice = null;//音频字节数组
 	private String note = null;
 	
 	public VoiceDiary()
@@ -42,6 +43,23 @@ public class VoiceDiary extends Diary
 	public String getVoiceName()
 	{
 		return this.voiceName;
+	}
+	
+	public void setVoice(Byte[] voice)
+	{
+		if(voice.length != 0)
+		{
+			this.voice = new Byte[voice.length];
+			for(int i = 0; i < voice.length; ++ i)
+			{
+				this.voice[i] = voice[i];
+			}
+		}
+	}
+	
+	public Byte[] getVoice()
+	{
+		return this.voice;
 	}
 	
 	public void setNote(String note)

@@ -6,7 +6,7 @@ import com.remmylife.head.*;
 
 public class TextDiary extends Diary
 {
-	private String text = null;
+	String text = null;
 	
 	public TextDiary()
 	{
