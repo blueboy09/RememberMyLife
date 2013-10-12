@@ -12,12 +12,16 @@ import com.remmylife.head.*;
 public class DiaryManager extends Diary {
 	
 	private String driver = "com.mysql.jdbc.Driver"; 
-	private String url = "jdbc:mysql://localhost:3306/";
+	private String url = "jdbc:mysql://localhost:3306/remembermylife";
 	private String user = "yfjin";
 	private String password = "1234";
 	
 	public DiaryManager() {
-				
+        Configuration rc = new Configuration(".\\database.properties");//相对路径
+        driver = rc.getValue("dirver");//以下读取properties文件的值
+        url = rc.getValue("url");
+        user = rc.getValue("user");
+        password = rc.getValue("password");
 	}
 	public DiaryManager(String user, String password) {
 		this.setUSER(user);
@@ -29,6 +33,7 @@ public class DiaryManager extends Diary {
 		this.setUSER(user);
 		this.setPassword(password);
 	}		
+	
 	
 	public void getInitialDiaryList() throws IllegalStateException, SQLException, IOException, ClassNotFoundException {
 		DataManager dataManager = new DataManager(driver,url,user,password);
@@ -137,10 +142,10 @@ public class DiaryManager extends Diary {
 		String weather = diary.getWeather().name();
 		
 		SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");    
-        sDateFormat.format(date);  
+        String dateq=sDateFormat.format(date);  
 
 		String savediary = "insert into `diarylist`(id,type,title,date,weather) values ('"
-				+id+"', '"+ type+"', '" + title +"', '"+date+"', '"+weather+"');" ;
+				+id+"', '"+ type+"', '" + title +"', '"+dateq+"', '"+weather+"');" ;
 		dataManager.setUpdate(savediary);
 		switch(diary.getType()){
 			case TEXT_DIARY : 
