@@ -3,16 +3,18 @@ package com.remmylife.gui.collector.photoalbum;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.Dimension;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.io.File;
+import java.io.*;
+import java.util.ArrayList;
 
 public class PhotoAlbum extends JPanel
 {
-	private ArrayList<String> imageList = new ArrayList<String>();//记录所有相片的名字
-	private String photoDir = "files/photo";
 	private final String addPhotoString = "添加照片";
+	private ArrayList<PhotoFrame> frameList = new ArrayList<PhotoFrame>();
 	
 	private JButton addPhotoButton = null;
 	private Box photoBox = null;
@@ -39,7 +41,7 @@ public class PhotoAlbum extends JPanel
 		
 		photoBox = Box.createVerticalBox();
 		JScrollPane scrollPane = new JScrollPane(photoBox);
-		scrollPane.setPreferredSize(new Dimension(120, 600));
+		scrollPane.setPreferredSize(new Dimension(30, 280));
 		scrollPane.createVerticalScrollBar();
 		
 		addPhotoButton = new JButton(addPhotoString);
@@ -52,8 +54,8 @@ public class PhotoAlbum extends JPanel
 		});
 		
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.add(addPhotoButton);
 		this.add(scrollPane);
+		this.add(addPhotoButton);
 	}
 	
 	private void addPhoto()
@@ -64,12 +66,47 @@ public class PhotoAlbum extends JPanel
 			File[] files = fileChooser.getSelectedFiles();
 			for(File file : files)
 			{
-				PhotoFrame photoFrame = new PhotoFrame(file);
-				photoBox.add(photoFrame);
-				photoBox.revalidate();
-				this.revalidate();
+				addPhoto(file);
 			}
 		}
+	}
+	
+	public void addPhoto(File file)
+	{
+		BufferedImage image = null;
+		try
+		{
+		    image = ImageIO.read(new FileInputStream(file.getAbsolutePath()));
+		}
+		catch(IOException ioe)
+		{
+			ioe.printStackTrace();
+		}
+		addPhoto(image);
+	}
+	
+	public void addPhoto(BufferedImage image)
+	{
+		if(image != null)
+		{
+			PhotoFrame photoFrame = new PhotoFrame(image);
+			frameList.add(photoFrame);
+			photoBox.add(photoFrame);
+			photoBox.revalidate();
+			this.revalidate();
+			this.setVisible(false);
+			this.setVisible(true);
+		}
+	}
+	
+	public BufferedImage[] getImages()
+	{
+		BufferedImage[] images = new BufferedImage[frameList.size()];
+		for(int i = 0; i < images.length; ++ i)
+		{
+			images[i] = frameList.get(i).getImage();
+		}
+		return images;
 	}
 	
 	class PhotoFilter extends FileFilter

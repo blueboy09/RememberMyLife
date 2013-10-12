@@ -15,10 +15,34 @@ public class Notepad extends JPanel
 	
 	private void init()
 	{
-		inputArea = new JTextArea(25, 60);
+		inputArea = new JTextArea(20, 30);
 		inputArea.setLineWrap(true);
-		
 		this.add(inputArea);
+	}
+	
+	public void setColumns(int c)
+	{
+		inputArea.setColumns(c);
+	}
+	
+	public int getColumns()
+	{
+		return inputArea.getColumns();
+	}
+	
+	public void setRows(int r)
+	{
+		inputArea.setRows(r);
+	}
+	
+	public int getRows()
+	{
+		return inputArea.getRows();
+	}
+	
+	public void setContent(String s)
+	{
+		inputArea.setText(s);
 	}
 	
 	public String getContent()

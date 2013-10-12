@@ -9,7 +9,7 @@ import com.remmylife.head.*;
 public class ImageDiary extends Diary
 {
 	String[] imageList = null;//图片名
-	Byte[][] images = null;//图片的字节流
+	byte[][] images = null;//图片的字节流
 	String note = null;//照片的注释
 	
 	public ImageDiary()
@@ -53,14 +53,14 @@ public class ImageDiary extends Diary
 		return this.imageList;
 	}
 	
-	public void setImages(Byte[][] images)
+	public void setImages(byte[][] images)
 	{
 		if(images.length != 0)
 		{
-			this.images = new Byte[images.length][];
+			this.images = new byte[images.length][];
 			for(int i = 0; i < images.length; ++ i)
 			{
-				this.images[i] = new Byte[images[i].length];
+				this.images[i] = new byte[images[i].length];
 				for(int j = 0; j < images[i].length; ++ j)
 				{
 					this.images[i][j] = images[i][j];
@@ -69,7 +69,7 @@ public class ImageDiary extends Diary
 		}
 	}
 	
-	public Byte[][] getImages()
+	public byte[][] getImages()
 	{
 		return images;
 	}

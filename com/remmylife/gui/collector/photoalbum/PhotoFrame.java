@@ -2,7 +2,7 @@ package com.remmylife.gui.collector.photoalbum;
 
 import javax.swing.JPanel;
 import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.awt.Dimension;
 import java.io.File;
 
@@ -11,24 +11,15 @@ import java.io.File;
  */
 class PhotoFrame extends JPanel
 {
-	private String fileName = null;
-	private String path = null;//该文件的路径
+	private BufferedImage image = null;
 	
 	private PhotoFrame()
 	{
 	}
 	
-	public PhotoFrame(String path)
+	public PhotoFrame(BufferedImage image)
 	{
-		this.path = path;
-		this.fileName = new File(path).getName();
-		this.init();
-	}
-	
-	public PhotoFrame(File file)
-	{
-		this.path = file.getAbsolutePath();
-		this.fileName = file.getName();
+		this.image = image;
 		this.init();
 	}
 	
@@ -39,20 +30,14 @@ class PhotoFrame extends JPanel
 	
 	public void paint(Graphics g)
 	{
-		if(fileName != null)
+		if(image != null)
 		{
-			Image image = this.getToolkit().getImage(path);
 			g.drawImage(image, 0, 0, 120, 100, this);
 		}
 	}
 	
-	public String getFileName()
+	public BufferedImage getImage()
 	{
-		return this.fileName;
-	}
-	
-	public void setFileName(String fileName)
-	{
-		this.fileName = fileName;
+		return this.image;
 	}
 }

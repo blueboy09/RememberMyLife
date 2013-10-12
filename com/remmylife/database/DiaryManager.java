@@ -13,11 +13,12 @@ public class DiaryManager extends Diary {
 	
 	private String driver = "com.mysql.jdbc.Driver"; 
 	private String url = "jdbc:mysql://localhost:3306/remembermylife";
-	private String user = "snowyben";
+	private String user = "yfjin";
 	private String password = "1234";
 	//private DataManager dataManager;
-	private int count = 0;
+	private static int count = 0;
 	private boolean headmode = true;
+	
 	
 	public ArrayList<Diary> readHeadsOfDiarys() throws IllegalStateException, ClassNotFoundException, SQLException{
 		return this.getDiaryList();
@@ -32,6 +33,7 @@ public class DiaryManager extends Diary {
 	}
 	
 	public void updateDiary(Diary diary) throws IllegalStateException, ClassNotFoundException, SQLException{
+		deleteDiary(diary);
 		saveDiary(diary);
 	}
 	
@@ -41,18 +43,50 @@ public class DiaryManager extends Diary {
 		}
 	}
 	
+	public void setCount() throws ClassNotFoundException, SQLException{
+		DataManager dataManager = new DataManager(driver,url,user,password);
+		String cValue = "SELECT max(id) FROM diarylist";
+		dataManager.setQuery(cValue);
+		if(dataManager.getValueAt(0,0)!=null ){
+		String ts = dataManager.getValueAt(0,0).toString();
+		count=Integer.valueOf(ts);
+		//System.out.println(count);
+		}
+		dataManager.disconnectFromDatabase();
+	}
+	
 	public DiaryManager() {
-				
+
+		try {
+			Configuration rc = new Configuration(".\\database.properties");
+			driver = rc.getValue("driver");
+			url = rc.getValue("url");
+			user = rc.getValue("user");
+			password = rc.getValue("password");
+			this.setCount();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	public DiaryManager(String user, String password) {
 		this.setUSER(user);
 		this.setPassword(password);
+		try {
+			this.setCount();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}	
 	public DiaryManager(String driver, String url,String user, String password) {
 		this.setDriver(driver);
 		this.setURL(url);
 		this.setUSER(user);
 		this.setPassword(password);
+		try {
+			this.setCount();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}		
 	
 	public void getInitialDiaryList() throws IllegalStateException, SQLException, IOException, ClassNotFoundException {
@@ -131,6 +165,15 @@ public class DiaryManager extends Diary {
 		return DiaryList;
 	}	
 	
+	public ArrayList<Diary> searchByDate(Date date) throws ClassNotFoundException, SQLException{
+		SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd");    
+        String dateq = sDateFormat.format(date); 
+        String listByTime= "Select * from diarylist where date like \""+ dateq +"%\"";
+		ArrayList<Diary> DiaryList = execSqlQuery(listByTime);
+		return DiaryList;
+	}
+	
+	
 	public void deleteDiary(Diary diary) throws IllegalStateException, SQLException, ClassNotFoundException{
 		DataManager dataManager = new DataManager(driver,url,user,password);
 		int id=diary.getId();
@@ -158,11 +201,21 @@ public class DiaryManager extends Diary {
 		dataManager.disconnectFromDatabase();
 	}
 	
+	public void deleteDiaryById(int id) throws ClassNotFoundException, SQLException{
+		Diary diary=getDiary(id);
+		deleteDiary(diary);
+	}
+	public void deleteDiarysById(ArrayList<Integer> ids) throws ClassNotFoundException, SQLException{
+		for(int i = 0 ; i < ids.size() ; i ++){
+			deleteDiaryById(ids.get(i));
+		}
+	}
 	
 	public void saveDiary(Diary diary) throws IllegalStateException, SQLException, ClassNotFoundException{
 		DataManager dataManager = new DataManager(driver,url,user,password);
 		int id = diary.getId();
-		if(id==0)id = count++;
+		System.out.println(count);
+		if(id<1)id = ++count;
 		String type = diary.getType().name();
 		String title = diary.getTitle();
 		Date date = diary.getDate();
@@ -294,7 +347,7 @@ public class DiaryManager extends Diary {
 		return DiaryList;
 		
 	}
-	
+
 	
 	public String readSQL(String fileName) throws IOException{
 		File file = new File(fileName);
@@ -343,5 +396,7 @@ public class DiaryManager extends Diary {
 		this.password=password;
 	}
 
+
+	
 	
 }
