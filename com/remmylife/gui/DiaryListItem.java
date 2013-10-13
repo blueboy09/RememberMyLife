@@ -83,12 +83,16 @@ public class DiaryListItem extends javax.swing.JPanel {
                         return;
                     switch (diary.getType()) {
                         case TEXT_DIARY: 
-                        	TextDiaryDialog dialog = new TextDiaryDialog(null, true, (TextDiary)diary);
-                        	dialog.setVisible(true);
+                        	TextDiaryDialog textDialog = new TextDiaryDialog(null, true, (TextDiary)diary);
+                        	textDialog.setVisible(true);
                             break;
                         case IMAGE_DIARY:
+                        	ImageDiaryDialog imageDialog = new ImageDiaryDialog(null, true, (ImageDiary)diary);
+                        	imageDialog.setVisible(true);
                             break;
                         case VOICE_DIARY:
+                        	VoiceDiaryDialog voiceDialog = new VoiceDiaryDialog(null, true, (VoiceDiary)diary);
+                        	voiceDialog.setVisible(true);
                             break;
                         case VIDEO_DIARY:
                             break;

@@ -11,6 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
@@ -30,6 +31,8 @@ public class ImageDiaryDialog extends javax.swing.JDialog {
     /**
      * Creates new form NewImageDiaryDialog
      */
+	private boolean uupdate = false;
+	
     public ImageDiaryDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -56,6 +59,7 @@ public class ImageDiaryDialog extends javax.swing.JDialog {
         for (int i = 0; i < length; i++) {
             images.add(convertBytes2Image(diary.getImages()[i]));
         }
+        refreshImageListView();
         
         initImageListView();
     }
@@ -217,6 +221,19 @@ public class ImageDiaryDialog extends javax.swing.JDialog {
     private void refreshImageListView() {
         box.removeAll();
         imagePanels.clear();
+        /*if(images.size()<imageDiary.getImages().length){
+        	System.out.println("hahahaha");
+        	imageDiary.setImages(getImageBytes(images));
+        	ImageDiary ti = new ImageDiary();
+        	ti.setId(imageDiary.getId());
+    		ti.setDate(imageDiary.getDate());
+    		ti.setImageList(imageDiary.getImageList());
+    		ti.setNote(imageDiary.getNote());
+    		ti.setTitle(imageDiary.getTitle());
+    		ti.setWeather(imageDiary.getWeather());
+    		imageDiary = ti;
+        }*/
+        uupdate = true;
         if (images.size() > 0) {
             for (BufferedImage image : images) {
                 ImagePanel imagePanel = new ImagePanel(image);
@@ -261,10 +278,20 @@ public class ImageDiaryDialog extends javax.swing.JDialog {
         if (imageDiary == null) {
             imageDiary = generateDiary();
             UICommonData.Instance().newAddedDiary = imageDiary;
-            //addDiary(textDiary);
+            try {
+				imageDiary.setId(UICommonData.Instance().diaryManager.addDiary(imageDiary));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
         } else {
             localUpdateDiary(imageDiary);
-            //updateDiary(textDiary);
+            try {
+				UICommonData.Instance().diaryManager.updateDiary(imageDiary);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
         }
         
         dispose();
@@ -301,6 +328,8 @@ public class ImageDiaryDialog extends javax.swing.JDialog {
             }
         } 
         images.removeAll(uselessImages);
+        //System.out.println("after delete "+imageDiary.getImages().length);
+        //imageDiary.setImages(images);
         refreshImageListView();
     }//GEN-LAST:event_jButton5ActionPerformed
 

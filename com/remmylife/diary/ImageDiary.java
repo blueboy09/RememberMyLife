@@ -18,6 +18,12 @@ public class ImageDiary extends Diary
 		this.setType(DiaryType.IMAGE_DIARY);
 	}
 	
+	/*public ImageDiary(ImageDiary im,boolean bo){
+		this.setId(im.getId());
+		this.setDate(im.getDate());
+		this.setImageList(im)
+	}*/
+	
 	public ImageDiary(String title, Date date)
 	{
 		super(title, date);
@@ -38,15 +44,16 @@ public class ImageDiary extends Diary
 	}
 	
 	public ImageDiary(int id, String title, Date date, Weather weather,
-			String note1, String[] imageList2, byte[] image) {
+			String note1, String[] imageList2, byte[][] image) {
 		super(id, DiaryType.IMAGE_DIARY, title, date, weather);
-		this.setNote(note);
-		this.setImageList(imageList);
-		this.setImages(images);	
+		this.setNote(note1);
+		this.setImageList(imageList2);
+		this.setImages(image);	
 	}
 
 	public void setImageList(String[] imageList)
-	{
+	{	
+		if(imageList!=null){
 		if(imageList.length != 0)
 		{
 			this.imageList = new String[imageList.length];
@@ -54,6 +61,7 @@ public class ImageDiary extends Diary
 			{
 				this.imageList[i] = imageList[i];
 			}
+		}
 		}
 	}
 	
@@ -76,6 +84,7 @@ public class ImageDiary extends Diary
 				}
 			}
 		}
+		
 	}
 	
 	public byte[][] getImages()

@@ -21,9 +21,8 @@ public class Recorder extends JPanel
 	private AudioInputStream audioInputStream = null;
 	private byte[] recordBytes = null;
 	private AudioFileFormat.Type type = AudioFileFormat.Type.WAVE;
-	
-	private JButton recordButton = null;
-	private JButton playButton = null;
+        
+    private int a = 0;
 	
 	public Recorder()
 	{
@@ -32,35 +31,6 @@ public class Recorder extends JPanel
 	
 	private void init()
 	{
-		recordButton = new JButton(startRecord);
-		recordButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				if(recordButton.getText().equals(startRecord))
-				{
-					recordButton.setText(stopRecord);
-					startRecord();
-				}
-				else if (recordButton.getText().equals(stopRecord))
-				{
-					stopRecord();
-					recordButton.setText(startRecord);
-				}
-			}
-		});
-		
-		playButton = new JButton(startPlay);
-		playButton.setEnabled(false);
-		playButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				playRecord();
-			}
-		});
-		this.add(recordButton);
-		this.add(playButton);
 	}
 	
 	public String getSoundDir()
@@ -83,17 +53,23 @@ public class Recorder extends JPanel
 		this.fileName = fileName;
 	}
 	
-	private void startRecord()
+	public void startRecord()
 	{
-		Record record = new Record(Record.RECORD);
+        a = 1;
+		Recorder.Record record = new Recorder.Record(Recorder.Record.RECORD);
 		recordThread = new Thread(record, "Record");
 		recordThread.start();
 	}
 	
-	private void stopRecord()
+	public void stopRecord()
 	{
+            //System.out.println("stopRecord: " + a);
 		recordThread = null;
-		playButton.setEnabled(true);
+                    
+            while(recordBytes == null)
+            {
+            	System.out.println("");
+            }
 	}
 	
 	private boolean saveRecord()
@@ -105,7 +81,7 @@ public class Recorder extends JPanel
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 		fileName = "record" + dateFormat.format(new Date()) + ".wav";
 		
-		//初始化存放声音文件的文件夹
+		//??????????????????????
 		if(!soundDir.endsWith("/"))
 		{
 			soundDir += "/";
@@ -134,20 +110,27 @@ public class Recorder extends JPanel
 		{
 			this.recordBytes[i] = recordBytes[i];
 		}
-		playButton.setEnabled(true);
 	}
 	
 	public byte[] getRecord()
-	{
+        {
 		return this.recordBytes;
 	}
 	
-	public void playRecord()
+	public void playRecord(byte[] recordBytes)
 	{
-		Record record = new Record(Record.PLAY);
+            while(recordBytes == null){};
+                setRecord(recordBytes);
+		Recorder.Record record = new Recorder.Record(Recorder.Record.PLAY);
 		recordThread = new Thread(record, "Play");
 		recordThread.start();
 	}
+        
+        public void stopPlay()
+        {
+            recordThread = null;
+            
+        }
 	
 	class Record implements Runnable
 	{
@@ -155,11 +138,11 @@ public class Recorder extends JPanel
 		public static final String PLAY = "PLAY";
 		private String operation = null;
 		
-		final float rate = 8000f;//采样率
-		final int sampleSize = 16;//样本大小
-		final boolean bigEndian = true;//是否采用bigEndian方式存储
-		final int channels = 1;//信道数
-		final AudioFormat.Encoding encoding = AudioFormat.Encoding.PCM_SIGNED;//采样方式
+		final float rate = 8000f;//??????
+		final int sampleSize = 16;//???С
+		final boolean bigEndian = true;//??????bigEndian????洢
+		final int channels = 1;//?????
+		final AudioFormat.Encoding encoding = AudioFormat.Encoding.PCM_SIGNED;//?????
 		
 		DataLine.Info info = null;
 		AudioFormat format = null;
@@ -181,7 +164,6 @@ public class Recorder extends JPanel
 			info = new DataLine.Info(TargetDataLine.class, format);
 			if(!AudioSystem.isLineSupported(info))
 			{
-				recordButton.setText(startRecord);
 				System.err.println("Line not supported");
 				return;
 			}
@@ -261,7 +243,7 @@ public class Recorder extends JPanel
 				e.printStackTrace();
 				return;
 			}
-			saveRecord();
+			//saveRecord();
 		}
 		
 		public void play()
@@ -274,9 +256,9 @@ public class Recorder extends JPanel
 				try
 				{
 					File file = new File(soundDir + fileName);
+                                        file.deleteOnExit();
 					InputStream in = new FileInputStream(file);
 					AudioPlayer.player.start(in);
-					file.deleteOnExit();
 				}
 				catch(Exception ioe)
 				{
